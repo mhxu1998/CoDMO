@@ -22,3 +22,24 @@ Data preparation
  
 [here]:https://www.hcup-us.ahrq.gov/toolssoftware/ccs/ccs.jsp#download
 
+Model training
+----
+1. Process raw MIMIC data.
+```bash
+python process_mimic.py --out_path processed/
+```
+2. The original code is transformed using CCS to generate the final input and label information. And alse get the hierarchy of the ontology.
+```bash
+python build_trees.py --out_path processed/
+```
+3. Pretrain the code embedding by Glove. The initialization of the basic embeddings follows the same procedure as in [GRAM].
+```bash
+cd preTrain
+python create_glove_comap.py
+python glove.py
+```
+4. Train the model.
+```bash
+python main.py --device <gpu_index> --embed_file_diag <pretrained diagnosis embedding file> --embed_file_proc <pretrained procedure embedding file>
+```
+[GRAM]:https://github.com/mp2893/gram
