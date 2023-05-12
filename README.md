@@ -5,8 +5,9 @@ This is the source code for ***Cooperative Dual Medical Ontology Representation 
 Requirements
 ----
 This project was run in a conda virtual environment on Ubuntu 16.04 with CUDA 10.1. 
-+ Pytorch==1.4.0
-+ Python==3.7.16
++ Pytorch==1.7.1
++ Python==3.7.9
++ theano==1.0.5
 
 Data preparation
 ----
@@ -35,11 +36,10 @@ python build_trees.py --out_path processed/
 3. Pretrain the code embedding by Glove. The initialization of the basic embeddings follows the same procedure as in [GRAM].
 ```bash
 cd preTrain
-python create_glove_comap.py
 python glove.py
 ```
 4. Train the model.
 ```bash
-python main.py --device <gpu_index> --embed_file_diag <pretrained diagnosis embedding file> --embed_file_proc <pretrained procedure embedding file>
+python main.py --device <gpu_index> --embed_file_diag preTrain/diag/diag.npz --embed_file_proc preTrain/proc/proc.npz
 ```
 [GRAM]:https://github.com/mp2893/gram
