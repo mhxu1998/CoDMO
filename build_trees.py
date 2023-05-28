@@ -7,12 +7,22 @@ from collections import defaultdict, OrderedDict
 
 
 def build_trees_diag(infile, seqFile, typeFile, outPath):
+    """
+    Get the diagnosis ontology structure and transform the input data
+    :param infile: The path to 'ccs_multi_dx_tool_2015.csv'
+    :param seqFile: The path to diagnosis input file 'diag.inputs' extracted by 'process_mimic.py'
+    :param typeFile: The path to diagnosis code mapping file 'diag.dict' extracted by 'process_mimic.py'
+    :param outPath: The output path
+    :return:
+    """
+
     infd = open(infile, 'r')
     _ = infd.readline()
 
     seqs = pickle.load(open(seqFile, 'rb'))
     types = pickle.load(open(typeFile, 'rb'))
 
+    # Get all the categories of the ICD code
     startSet = set(types.keys())
     hitList = []
     missList = []
@@ -76,7 +86,6 @@ def build_trees_diag(infile, seqFile, typeFile, outPath):
     # missList-> ICD not occurred in MIMIC-III dataset
     missSet = startSet - set(hitList)
 
-
     fiveMap = {}
     fourMap = {}
     threeMap = {}
@@ -124,7 +133,6 @@ def build_trees_diag(infile, seqFile, typeFile, outPath):
             code1 = types[desc1]
             twoMap[icdCode] = [icdCode, rootCode, code1]
 
-
     newFiveMap = {}
     newFourMap = {}
     newThreeMap = {}
@@ -132,7 +140,6 @@ def build_trees_diag(infile, seqFile, typeFile, outPath):
     newOneMap = {}
     newTypes = {}
     rtypes = dict([(v, k) for k, v in types.items()])       # type_num->icd_code
-
 
     codeCount = 0
     for icdCode, ancestors in fiveMap.items():
@@ -217,6 +224,15 @@ def build_trees_diag(infile, seqFile, typeFile, outPath):
 
 
 def build_trees_proc(infile, seqFile, typeFile, outPath):
+    """
+    Get the procedure ontology structure and transform the input data
+    :param infile: The path to 'ccs_multi_pr_tool_2015.csv'
+    :param seqFile: The path to procedure input file 'proc.inputs' extracted by 'process_mimic.py'
+    :param typeFile: The path to procedure code mapping file 'proc.dict' extracted by 'process_mimic.py'
+    :param outPath: The output path
+    :return:
+    """
+
     infd = open(infile, 'r')
     _ = infd.readline()
 
@@ -266,7 +282,6 @@ def build_trees_proc(infile, seqFile, typeFile, outPath):
 
     # pickle.dump(types, open(outPath + 'tree.proc.ancestors.types', 'wb'), -1)
 
-
     print('cat1count: %d' % cat1count)
     print('cat2count: %d' % cat2count)
     print('cat3count: %d' % cat3count)
@@ -274,9 +289,6 @@ def build_trees_proc(infile, seqFile, typeFile, outPath):
     print('hit count: %d' % len(set(hitList)))
     print('miss count: %d' % len(startSet - set(hitList)))
     missSet = startSet - set(hitList)
-
-
-
 
     fourMap = {}
     threeMap = {}
@@ -317,7 +329,6 @@ def build_trees_proc(infile, seqFile, typeFile, outPath):
             code1 = types[desc1]
             twoMap[icdCode] = [icdCode, rootCode, code1]
 
-
     newFourMap = {}
     newThreeMap = {}
     newTwoMap = {}
@@ -352,7 +363,6 @@ def build_trees_proc(infile, seqFile, typeFile, outPath):
                 newVisit.append(newTypes[rtypes[code]])
             newPatient.append(newVisit)
         newSeqs.append(newPatient)
-
 
     p2c = [defaultdict(set) for _ in range(4)]
     c2p = [defaultdict(set) for _ in range(4)]

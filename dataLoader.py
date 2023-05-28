@@ -3,10 +3,26 @@ import pickle
 
 
 def len_argsort(seq):
+    """
+    Sort the input data from least to most visits
+    :param seq: input data
+    :return: sorted data
+    """
     return sorted(range(len(seq)), key=lambda x: len(seq[x]))
 
 
 def load_data(diagSeqFile, diagLabelFile, procSeqFile, procLabelFile, test_ratio=0.1, valid_ratio=0.1, seed=5):
+    """
+    Split data into train/valid/test set
+    :param diagSeqFile: The path to diagnosis input file 'tree.diag.seqs' extracted by 'build_trees.py'
+    :param diagLabelFile: The path to diagnosis label file 'next_diag_ccs_single.labels' extracted by 'process_mimic.py'
+    :param procSeqFile: The path to procedure input file 'tree.proc.seqs' extracted by 'build_trees.py'
+    :param procLabelFile: The path to procedure label file 'next_proc_ccs_single.labels' extracted by 'process_mimic.py'
+    :param test_ratio: The test set ratio
+    :param valid_ratio: The valid set ratio
+    :param seed: Random seed that splits the data set
+    :return: train_set, valid_set, test_set
+    """
     diag_sequences = np.array(pickle.load(open(diagSeqFile, 'rb')), dtype=object)
     diag_labels = np.array(pickle.load(open(diagLabelFile, 'rb')), dtype=object)
     proc_sequences = np.array(pickle.load(open(procSeqFile, 'rb')), dtype=object)
@@ -61,6 +77,14 @@ def load_data(diagSeqFile, diagLabelFile, procSeqFile, procLabelFile, test_ratio
 
 
 def padMatrix(seqs, labels, options, task):
+    """
+    Converts the data into a format for model input
+    :param seqs: input data
+    :param labels: output label
+    :param options: local variable
+    :param task: 'diag' or 'proc'
+    :return: x, y, mask, lengths, code_mask
+    """
     lengths = np.array([len(seq) for seq in seqs])-1
     n_samples = len(seqs)
     maxlen = np.max(lengths)

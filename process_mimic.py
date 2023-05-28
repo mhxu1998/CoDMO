@@ -10,7 +10,7 @@ from datetime import datetime
 class LabelsForData(object):
     def __init__(self, ccs_single_file):
         self.ccs_single_dx_df = pd.read_csv(ccs_single_file, header=0, dtype=object)
-        self.code2single_dx = {}
+        self.code2single_dx = {}        # ICD code to CCS single category
         self.build_maps()
 
     def build_maps(self):
@@ -21,6 +21,16 @@ class LabelsForData(object):
 
 
 def processing(adm_file, diag_file, proc_file, diag_ccs_single_file, proc_ccs_single_file, out_dir):
+    """
+    Process raw MIMIC data
+    :param adm_file: The path to 'ADMISSIONS.csv'
+    :param diag_file: The path to 'DIAGNOSES_ICD.csv'
+    :param proc_file: The path to 'PROCEDURES_ICD.csv'
+    :param diag_ccs_single_file: The path to 'ccs_single_dx_tool_2015.csv'
+    :param proc_ccs_single_file: The path to 'ccs_single_pr_tool_2015.csv'
+    :param out_dir: The output path
+    """
+
     # ICD->CCS single category mapping
     label4data = LabelsForData(diag_ccs_single_file)
     label4data_proc = LabelsForData(proc_ccs_single_file)
@@ -252,8 +262,8 @@ def processing(adm_file, diag_file, proc_file, diag_ccs_single_file, proc_ccs_si
             all_proc_seqs_ccs_single = new_proc_seqs_ccs_single[i]
             all_time = time_seqs[i]
 
-        input_diag = all_diag_seqs[:]         # diag ICD list removing the last visit
-        input_proc = all_proc_seqs[:]         # proc ICD list removing the last visit
+        input_diag = all_diag_seqs[:]         # diag ICD list
+        input_proc = all_proc_seqs[:]         # proc ICD list
         label_diag = all_diag_seqs[-1]          # diag ICD of the last visit
         label_diag_ccs_single = all_diag_seqs_ccs_single[-1]    # diag ICD (ccs single) of the last visit
         label_proc = all_proc_seqs[-1]          # proc ICD of the last visit

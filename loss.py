@@ -9,7 +9,7 @@ class CrossEntropy(nn.Module):
 
     # @torchsnooper.snoop()
     def forward(self, y_hat, y, length):
-        # calculate the loss
+        # Calculate the loss
         logEps = torch.tensor(1e-8)
         tmp1 = y * torch.log(y_hat + logEps)
         tmp2 = (1. - y) * torch.log(1. - y_hat + logEps)
@@ -19,6 +19,7 @@ class CrossEntropy(nn.Module):
         log_likelyhood = torch.div(tmp, length)
         cost = torch.mean(log_likelyhood)
 
+        # Get the top k results
         y_sorted, indices = torch.sort(y_hat, dim=2, descending=True)
 
         TP_5 = 0.
@@ -58,5 +59,4 @@ class CrossEntropy(nn.Module):
             else:
                 TN_20 += 1
 
-
-        return cost, [TP_5,TP_10,TP_15,TP_20], [TP_5+TN_5,TP_10+TN_10,TP_15+TN_15,TP_20+TN_20]
+        return cost, [TP_5, TP_10, TP_15, TP_20], [TP_5+TN_5, TP_10+TN_10, TP_15+TN_15, TP_20+TN_20]

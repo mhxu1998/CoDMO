@@ -22,9 +22,42 @@ torch.set_num_threads(3)
 def train_model(seqFile_diag, seqFile_proc, labelFile_diag, labelFile_proc, embFile_diag, embFile_proc, processed_path, output_path, device,
                 inputDimSize_diag, numAncestors_diag, numClass_diag, inputDimSize_proc, numAncestors_proc, numClass_proc, split_seed,
                 embDimSize, hiddenDimSize, attentionDimSize, dropoutRate, max_epochs, L2, lr, batchSize, coef_diag, coef_proc, coef_priori, val_ratio, test_ratio):
+    """
+
+    :param seqFile_diag: The path to diagnosis input file 'tree.diag.seqs' extracted by 'build_trees.py'
+    :param seqFile_proc: The path to procedure input file 'tree.proc.seqs' extracted by 'build_trees.py'
+    :param labelFile_diag: The path to diagnosis label file 'next_diag_ccs_single.labels' extracted by 'process_mimic.py'
+    :param labelFile_proc: The path to procedure label file 'next_proc_ccs_single.labels' extracted by 'process_mimic.py'
+    :param embFile_diag: The path to pretrained diagnosis code embedding file
+    :param embFile_proc: The path to pretrained procedure code embedding file
+    :param processed_path: The path of processed data
+    :param output_path: The output path
+    :param device: Use cpu or Gpu
+    :param inputDimSize_diag: Numbers of diagnosis root codes
+    :param numAncestors_diag: Numbers of diagnosis ancestor codes
+    :param numClass_diag: Numbers of diagnosis labels
+    :param inputDimSize_proc: Numbers of procedure root codes
+    :param numAncestors_proc: Numbers of procedure ancestor codes
+    :param numClass_proc: Numbers of procedure labels
+    :param split_seed: Random seed that splits the data set
+    :param embDimSize: The dimension of diagnosis/procedure code embedding
+    :param hiddenDimSize: The dimension of hidden layer
+    :param attentionDimSize: The dimension of attention layer
+    :param dropoutRate: The rate of dropout
+    :param max_epochs: Max epochs for model training
+    :param L2: L2 regularization
+    :param lr: The learning rate
+    :param batchSize: The mini-batch size
+    :param coef_diag: The coefficient of the diagnosis prediction loss
+    :param coef_proc: The coefficient of the procedure prediction loss
+    :param coef_priori: The coefficient of the priori interaction loss
+    :param val_ratio: The valid set ratio
+    :param test_ratio: The test set ratio
+    """
 
     options = locals().copy()
 
+    # Load ontology structure
     p2cFile_diag = processed_path + 'tree.diag.p2c'
     p2cFile_proc = processed_path + 'tree.proc.p2c'
     level_diag = 5
@@ -32,6 +65,7 @@ def train_model(seqFile_diag, seqFile_proc, labelFile_diag, labelFile_proc, embF
     p2c_parent_diag, p2c_children_diag, p2c_mask_diag, c2p_parents_diag, c2p_child_diag, c2p_mask_diag = build_hierarchical_tree(p2cFile_diag, level_diag)
     p2c_parent_proc, p2c_children_proc, p2c_mask_proc, c2p_parents_proc, c2p_child_proc, c2p_mask_proc = build_hierarchical_tree(p2cFile_proc, level_proc)
 
+    # Threshold for binarization of a cooccurrence matrix
     threshold = 0.01
 
     # Construct nearest neighbor nodes and weights
@@ -286,9 +320,7 @@ def train_model(seqFile_diag, seqFile_proc, labelFile_diag, labelFile_proc, embF
         print2file(buf, logFile)
 
         # save the best model
-        # if valid_acc + valid_acc_proc > bestAcc:
         if valid_cost < bestValidCost:
-            # bestAcc = valid_acc + valid_acc_proc
             bestValidCost = valid_cost
             bestTestCost = test_cost
             bestTrainCost = cost
@@ -374,7 +406,6 @@ if __name__ == '__main__':
     coef_priori = args.coef_priori
     val_ratio = args.val_ratio
     test_ratio = args.test_ratio
-
 
     inputDimSize_diag = calculate_dimSize(seqFile_diag)
     print('Diagnosis inputDimSize:%d' % inputDimSize_diag)

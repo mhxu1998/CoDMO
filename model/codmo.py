@@ -9,11 +9,17 @@ torch.cuda.manual_seed_all(seed)
 
 
 def load_embedding(embFile):
+    """
+    Load pretrained embedding
+    :param embFile: The path to pretrained code embedding file
+    :return: Embedding
+    """
     m = np.load(embFile)
     w = (m['w'] + m['w_tilde']) / 2.0
     return w
 
 
+# Leaf Code Propagation
 class Leaf_attention(nn.Module):
     def __init__(self, embDimSize, attentionDimSize, device):
         super(Leaf_attention, self).__init__()
@@ -49,6 +55,7 @@ class Leaf_attention(nn.Module):
         return W_tmp
 
 
+# Bottom-up and Top-down Propagation
 class Attention(nn.Module):
     def __init__(self, embDimSize, attentionDimSize, device):
         super(Attention, self).__init__()

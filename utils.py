@@ -3,8 +3,14 @@ import numpy as np
 import itertools
 
 
-# A priori statistical co-occurrence of medical codes from patient’s history visits
 def co_matrix_building(seqs_file, icd_nums, threshold):
+    """
+    Construct a priori statistical co-occurrence of medical codes from patient’s history visits
+    :param seqs_file: The path to input file extracted by 'build_trees.py'
+    :param icd_nums: Numbers of root codes
+    :param threshold: Threshold for binarization of a cooccurrence matrix
+    :return: binary_matrix, weight_matrix
+    """
     seqs = pickle.load(open(seqs_file, 'rb'))
     co_matrix = np.empty((icd_nums, icd_nums))
 
@@ -24,13 +30,19 @@ def co_matrix_building(seqs_file, icd_nums, threshold):
     binary_matrix = np.where(tmp < threshold, tmp, 1)
 
     weight_matrix = co_matrix.copy()
-    # nodes, neighbors, masks, weights = build_node_neighbor(binary_matrix, weight_matrix)
 
     return binary_matrix, weight_matrix
 
 
-# A priori statistical co-occurrence of diagnosis and procedure codes from patient’s history visits
 def co_matrix_with_diag_proc(seqs_file_diag, seqs_file_proc, icd_nums_diag, icd_nums_proc):
+    """
+    Construct a priori statistical co-occurrence of diagnosis and procedure codes from patient’s history visits
+    :param seqs_file_diag: The path to diagnosis input file extracted by 'build_trees.py'
+    :param seqs_file_proc: The path to procedure input file extracted by 'build_trees.py'
+    :param icd_nums_diag: Numbers of diagnosis root codes
+    :param icd_nums_proc: Numbers of diagnosis root codes
+    :return: co_matrix
+    """
     diag_seqs = pickle.load(open(seqs_file_diag, 'rb'))
     proc_seqs = pickle.load(open(seqs_file_proc, 'rb'))
     matrix = np.empty((icd_nums_diag, icd_nums_proc))
@@ -45,8 +57,13 @@ def co_matrix_with_diag_proc(seqs_file_diag, seqs_file_proc, icd_nums_diag, icd_
     return co_matrix
 
 
-# Construct nearest neighbor node
 def build_node_neighbor(binary_matrix, weight_matrix):
+    """
+    Construct nearest neighbor node
+    :param binary_matrix: co-occurrence binary matrix
+    :param weight_matrix: co-occurrence weight matrix
+    :return: new_nodes, new_neighbors, masks, new_weights
+    """
     neighbors = []
     neighbor_weight = []
     for i in range(len(binary_matrix)):
@@ -125,8 +142,13 @@ def build_node_neighbor(binary_matrix, weight_matrix):
     return new_nodes, new_neighbors, masks, new_weights
 
 
-# Build a bidirectional hierarchy
 def build_hierarchical_tree(p2cFile, level):
+    """
+    Build a bidirectional hierarchy based on ontology
+    :param p2cFile: The path to hierarchical relation file extracted by 'build_trees.py'
+    :param level: ontology level number
+    :return: p2c_parent, p2c_children, p2c_mask, c2p_parents, c2p_child, c2p_mask
+    """
     p2c, c2p = pickle.load(open(p2cFile, 'rb'))
 
     # Down to Top (in a set form)
@@ -193,6 +215,11 @@ def build_hierarchical_tree(p2cFile, level):
 
 
 def calculate_dimSize(seqFile):
+    """
+    Count numbers of root codes
+    :param seqFile: The path to input file extracted by 'build_trees.py'
+    :return: Numbers of root codes
+    """
     seqs = pickle.load(open(seqFile, 'rb'))
     codeSet = set()
     for patient in seqs:
@@ -203,6 +230,11 @@ def calculate_dimSize(seqFile):
 
 
 def get_rootCode(treeFile):
+    """
+    Count numbers of all codes
+    :param treeFile: The path to ontology tree file extracted by 'build_trees.py'
+    :return: Numbers of all codes
+    """
     tree = pickle.load(open(treeFile, 'rb'))
     #print(list(tree.values()))
     rootCode = list(tree.values())[0][1]
@@ -210,6 +242,11 @@ def get_rootCode(treeFile):
 
 
 def print2file(buf, outFile):
+    """
+    Print to output file
+    :param buf: Output content
+    :param outFile: Output file
+    """
     outfd = open(outFile, 'a')
     outfd.write(buf + '\n')
     outfd.close()

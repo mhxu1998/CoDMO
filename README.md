@@ -33,7 +33,7 @@ python process_mimic.py --out_path processed/
 ```bash
 python build_trees.py --out_path processed/
 ```
-3. Pretrain the code embedding by Glove. The initialization of the basic embeddings follows the same procedure as in [GRAM] (based on theano).
+3. Pretrain the code embedding by Glove. The initialization of the basic embeddings follows the same procedure as in [GRAM].
 ```bash
 cd preTrain
 python glove.py
