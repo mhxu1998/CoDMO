@@ -43,3 +43,15 @@ python glove.py
 python main.py --device <gpu_index> --embed_file_diag preTrain/diag/diag.npz --embed_file_proc preTrain/proc/proc.npz
 ```
 [GRAM]:https://github.com/mp2893/gram
+
+Model test using sample data
+----
+The sample data are stored in the *data* directory:
++ ADMISSIONS_sample.csv
++ DIAGNOSES_ICD_sample.csv
++ PROCEDURES_ICD_sample.csv
+
+Before you begin, unzip the "comatrix.zip" file in the *processed* folder and store them directly in that folder
+```bash
+python test.py
+```
