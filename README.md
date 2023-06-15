@@ -1,7 +1,8 @@
 CoDMO
 ===
-This is the source code for ***Cooperative Dual Medical Ontology Representation Learning for Clinical Assisted Decision-Making***.
+This is the source code for ***[Cooperative Dual Medical Ontology Representation Learning for Clinical Assisted Decision-Making]***.
 
+[Cooperative Dual Medical Ontology Representation Learning for Clinical Assisted Decision-Making]:https://www.sciencedirect.com/science/article/pii/S0010482523006030
 
 Requirements
 ----
