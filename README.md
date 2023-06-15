@@ -2,6 +2,7 @@ CoDMO
 ===
 This is the source code for ***Cooperative Dual Medical Ontology Representation Learning for Clinical Assisted Decision-Making***.
 
+
 Requirements
 ----
 This project was run in a conda virtual environment on Ubuntu 16.04 with CUDA 10.1. 
@@ -26,32 +27,36 @@ Data preparation
 Model training
 ----
 1. Process raw MIMIC data.
-```bash
+```
 python process_mimic.py --out_path processed/
 ```
 2. The original code is transformed using CCS to generate the final input and label information. And alse get the hierarchy of the ontology.
-```bash
+```
 python build_trees.py --out_path processed/
 ```
 3. Pretrain the code embedding by Glove. The initialization of the basic embeddings follows the same procedure as in [GRAM].
-```bash
+```
 cd preTrain
 python glove.py
 ```
 4. Train the model.
-```bash
+```
 python main.py --device <gpu_index> --embed_file_diag preTrain/diag/diag.npz --embed_file_proc preTrain/proc/proc.npz
 ```
 [GRAM]:https://github.com/mp2893/gram
 
-Model test using sample data
+Cite
 ----
-The sample data are stored in the *data* directory:
-+ ADMISSIONS_sample.csv
-+ DIAGNOSES_ICD_sample.csv
-+ PROCEDURES_ICD_sample.csv
-
-Before you begin, unzip the "comatrix.zip" file in the *processed* folder and store them directly in that folder
-```bash
-python test.py
+If you find the paper or the implementation helpful, please cite the following paper:
 ```
+@article{xu2023cooperative,
+  title={Cooperative dual medical ontology representation learning for clinical assisted decision-making},
+  author={Xu, Muhao and Zhu, Zhenfeng and Li, Youru and Zheng, Shuai and Li, Linfeng and Wu, Haiyan and Zhao, Yao},
+  journal={Computers in Biology and Medicine},
+  volume={163},
+  pages={107138},
+  year={2023},
+  publisher={Elsevier}
+}
+```
+
